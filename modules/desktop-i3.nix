@@ -1,12 +1,23 @@
 { pkgs, ... }:
 
 {
-  services.xserver = {
-    enable = true;
+  services = {
+    libinput.enable = true;
 
-    windowManager.i3 = {
+    xserver = {
       enable = true;
-      package = pkgs.i3-gaps;
+
+      displayManager.gdm.enable = true;
+
+      windowManager.i3 = {
+        enable = true;
+        package = pkgs.i3-gaps;
+      };
+
+      xkb = {
+        layout = "us";
+        variant = "mac";
+      };
     };
   };
 }

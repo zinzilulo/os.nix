@@ -17,6 +17,16 @@ in
 
   home.stateVersion = "25.05";
 
+  programs.bash = {
+    enable = true;
+    initExtra = "eval \"$(direnv hook bash)\"";
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   programs.alacritty = {
     enable = true;
     settings = {

@@ -71,6 +71,7 @@ let
     "adobe-digital-editions"
     "calibre"
     "keyboardcleantool"
+    "qflipper"
     "stellarium"
     "synologyassistant"
   ];

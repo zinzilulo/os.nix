@@ -17,7 +17,6 @@ in
   imports = [
     ./hardware-configuration.nix
     home-manager.nixosModules.home-manager
-    ../../modules/desktop-gnome.nix
     ../../modules/desktop-sway.nix
     ../../modules/desktop-i3.nix
   ];
