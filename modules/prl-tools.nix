@@ -17,6 +17,14 @@ in
 {
   nixpkgs.config.allowUnfree = true;
 
+  systemd.services."prlshprint" = {
+    wantedBy = lib.mkForce [ ];
+
+    unitConfig = {
+      ConditionPathExists = lib.mkForce "!/dev/null";
+    };
+  };
+
   hardware.parallels = {
     enable = true;
     package = unstablePkgs.prl-tools;

@@ -36,6 +36,21 @@ in
   services.dbus.enable = true;
   security.polkit.enable = true;
 
+  security.pam = {
+    u2f = {
+      enable = true;
+
+      settings.cue = true;
+    };
+
+    services = {
+      sudo.u2fAuth = true;
+      login.u2fAuth = true;
+      gdm-password.u2fAuth = true;
+      polkit-1.u2fAuth = true;
+    };
+  };
+
   time.timeZone = "Europe/London";
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -52,10 +67,11 @@ in
   };
 
   programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
   networking.networkmanager.enable = true;
   # networking.wireless.enable = true;
