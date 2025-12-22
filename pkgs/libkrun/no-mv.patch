@@ -1,0 +1,7 @@
+diff --git a/Makefile b/Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -1,3 +1,3 @@
+-	mv target/release/libkrun.dylib target/release/$(KRUN_BASE_$(OS))
++	@if [ "libkrun.dylib" != "$(KRUN_BASE_$(OS))" ]; then mv target/release/libkrun.dylib target/release/$(KRUN_BASE_$(OS)); fi
+
