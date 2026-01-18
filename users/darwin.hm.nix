@@ -93,11 +93,14 @@
       })
 
       ripgrep
+      fd
       fzf
       lazygit
       gh
 
       aria2
+      container
+      exiftool
       ffmpeg-full
       (pkgs.fio.override {
         withLibnbd = false;

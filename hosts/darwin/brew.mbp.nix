@@ -3,14 +3,9 @@ let
     "th-ch/youtube-music"
   ];
 
-  brews = [
-    "container"
-  ];
-
   autoUpdatedCasks = [
     "1password"
     "adguard"
-    "adobe-creative-cloud"
     "altserver"
     "app-cleaner"
     "bartender"
@@ -24,7 +19,6 @@ let
     "drivedx"
     "font-sf-mono"
     "google-chrome"
-    "jetbrains-toolbox"
     "jordanbaird-ice@beta"
     "macs-fan-control"
     "minecraft"
@@ -52,6 +46,7 @@ let
     "th-ch/youtube-music/youtube-music"
     "adobe-digital-editions"
     "calibre"
+    "inkscape"
     "keyboardcleantool"
     "qflipper"
     "stellarium"
@@ -59,6 +54,8 @@ let
   ];
 
   actuallyAutoUpdatedCasks = [
+    "apparency"
+    "audacity"
     "dictionaries"
     "mp3tag"
     "rustdesk"
@@ -71,7 +68,7 @@ in
 
     onActivation.cleanup = "zap";
 
-    inherit taps brews;
+    inherit taps;
 
     casks = autoUpdatedCasks ++ notAutoUpdatedCasks ++ actuallyAutoUpdatedCasks;
   };

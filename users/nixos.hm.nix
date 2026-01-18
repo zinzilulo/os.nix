@@ -114,6 +114,7 @@ in
 
     packages = with pkgs; [
       ripgrep
+      fd
       fzf
       lazygit
       gh
