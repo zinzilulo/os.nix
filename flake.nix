@@ -9,11 +9,14 @@
 
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    direnv-instant.url = "github:Mic92/direnv-instant";
   };
 
   outputs =
     {
       self,
+      direnv-instant,
       nixpkgs,
       nix-darwin,
       home-manager,
@@ -43,6 +46,7 @@
           specialArgs = {
             inherit self home-manager;
             inherit (local) userName;
+            inherit direnv-instant;
             hostName = local.hosts.${key};
           };
 
@@ -95,6 +99,7 @@
           specialArgs = {
             inherit self home-manager;
             inherit (local) userName;
+            inherit direnv-instant;
             hostName = local.hosts."darwin-mbp";
           };
 

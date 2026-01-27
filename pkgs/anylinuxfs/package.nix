@@ -1,36 +1,101 @@
 {
   lib,
   pkgs,
+  cctools,
+  makeWrapper,
   stdenv,
+  stdenvNoCC,
+  fetchFromGitLab,
   fetchFromGitHub,
   fetchurl,
   rustPlatform,
   buildGoModule,
   pkg-config,
-  libkrun,
   util-linux,
   gvproxy,
+  moltenvk,
   pkgsCross,
+  dtc,
+  zig,
+  xz,
+  libepoxy,
+  gnumake,
 }:
 
 let
-  version = "0.9.2";
+  virglrenderer-krunkit =
+    (pkgs.virglrenderer.override {
+      vulkanSupport = true;
+    }).overrideAttrs
+      (old: {
+        pname = "virglrenderer";
+        version = "0.10.4e-krunkit";
+
+        src = fetchFromGitLab {
+          domain = "gitlab.freedesktop.org";
+          owner = "slp";
+          repo = "virglrenderer";
+          rev = "0.10.4e-krunkit";
+          hash = "sha256-+c7HxTCd5rRSlCAJ1KobyVvZJ2Fp71l4PzMItTGH4G8=";
+        };
+
+        buildInputs = (old.buildInputs or [ ]) ++ [
+          moltenvk
+        ];
+
+        postPatch = (old.postPatch or "") + ''
+          substituteInPlace meson.build \
+            --replace-fail \
+              "libdrm_dep = dependency('libdrm', version : '>=2.4.50', required: get_option('drm').enabled())" \
+              "libdrm_dep = dependency('libdrm', version : '>=2.4.50', required: (get_option('drm').enabled() and host_machine.system() != 'darwin'))"
+        '';
+
+        mesonFlags = [
+          "-Dvenus=true"
+          "-Drender-server=false"
+        ];
+
+        meta = old.meta // {
+          platforms = [ "aarch64-darwin" ];
+        };
+      });
+
+  libkrunfw = import ./libkrunfw.nix {
+    inherit lib stdenvNoCC fetchurl;
+  };
+  libkrun = import ./libkrun.nix {
+    inherit
+      lib
+      fetchFromGitHub
+      rustPlatform
+      pkg-config
+      dtc
+      zig
+      xz
+      libkrunfw
+      virglrenderer-krunkit
+      libepoxy
+      gnumake
+      ;
+  };
+
+  version = "0.9.4";
 
   src = fetchFromGitHub {
     owner = "nohajc";
     repo = "anylinuxfs";
-    rev = "f9b09a5";
-    hash = "sha256-vz3c58wsz8mFjH52OZPia9GX6xTtZaSicrDxjTGKpmQ=";
+    rev = "v${version}";
+    hash = "sha256-BpHEVg0Kjnckybgngif2Z8g+RimkyjowVFM3xhDtnkM=";
   };
 
   linuxImage = fetchurl {
-    url = "https://github.com/nohajc/libkrunfw/releases/download/v6.12.34-rev4/linux-aarch64-Image-v6.12.34-anylinuxfs.tar.gz";
-    hash = "sha256-TF0NIBQZFcXO+dbd3NsGbTTmqMnTN+f6Cev0sOgtFPw=";
+    url = "https://github.com/nohajc/libkrunfw/releases/download/v6.12.62-rev1/linux-aarch64-Image-v6.12.62-anylinuxfs.tar.gz";
+    hash = "sha256-2uN8qJR1grPgzcnv28LeX1RvmJ0a5NYhu8NOkM9BIAE=";
   };
 
   linuxModules = fetchurl {
-    url = "https://github.com/nohajc/libkrunfw/releases/download/v6.12.34-rev4/modules.squashfs";
-    hash = "sha256-iak4kjCgB9RdoaYqjWW7axFihN3foA0pNEVRMRP2ego=";
+    url = "https://github.com/nohajc/libkrunfw/releases/download/v6.12.62-rev1/modules.squashfs";
+    hash = "sha256-hu1IXk5GuiZSYaVeJckuoV9hGAA/zslai6/eitOfaX8=";
   };
 
   anylinuxfsBin = rustPlatform.buildRustPackage {
@@ -42,7 +107,7 @@ let
       sourceRoot="$PWD"
     '';
 
-    cargoHash = "sha256-7lxZoojWoHT6/T4/TyDpHiAzis25swsI7/awz6xi1xU=";
+    cargoHash = "sha256-KH5i24r9CTNkLebaOZzw9gagtGVKS8H0i3zj7r4KcJI=";
 
     nativeBuildInputs = [ pkg-config ];
     buildInputs = [
@@ -73,7 +138,7 @@ let
       EOF
     '';
 
-    cargoHash = "sha256-dfhCUWUZYom30XbYqtiwwwS/bp3V+O10MYH2HunVvrI=";
+    cargoHash = "sha256-BByBLs1ft7b5bBtUGzcL+xYj2/kO9FWsvRHQ8g03KDA=";
 
     CARGO_ENCODED_RUSTFLAGS = "-Ctarget-feature=+crt-static";
     RUSTFLAGS = "-C target-feature=+crt-static";
@@ -113,8 +178,8 @@ stdenv.mkDerivation {
   dontBuild = true;
 
   nativeBuildInputs = [
-    pkgs.darwin.cctools
-    pkgs.makeWrapper
+    cctools
+    makeWrapper
   ];
 
   installPhase = ''

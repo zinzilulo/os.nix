@@ -1,9 +1,11 @@
 {
+  lib,
   pkgs,
   self,
   userName,
   hostName,
   home-manager,
+  direnv-instant,
   ...
 }:
 
@@ -37,16 +39,24 @@
     ];
   };
 
-  nixpkgs.overlays = [
-    (final: prev: {
-      virglrenderer-krunkit = final.callPackage (self + /pkgs/virglrenderer-krunkit/default.nix) { };
-      libkrunfw = final.callPackage (self + /pkgs/libkrunfw/default.nix) { };
-      libkrun = final.callPackage (self + /pkgs/libkrun/default.nix) { };
-      anylinuxfs = final.callPackage (self + /pkgs/anylinuxfs/default.nix) { };
-      katago = final.callPackage (self + /pkgs/katago/default.nix) { };
-      waifu2x-ncnn-vulkan = final.callPackage (self + /pkgs/waifu2x-ncnn-vulkan/default.nix) { };
-    })
-  ];
+  nixpkgs = {
+    hostPlatform = "aarch64-darwin";
+
+    overlays = [
+      (final: prev: {
+        anylinuxfs = final.callPackage (self + /pkgs/anylinuxfs/package.nix) { };
+        katago = final.callPackage (self + /pkgs/katago/package.nix) { };
+        waifu2x-ncnn-vulkan = final.callPackage (self + /pkgs/waifu2x-ncnn-vulkan/package.nix) { };
+        portal-stillalive-rust = final.callPackage (self + /pkgs/still-alive/package.nix) { };
+      })
+    ];
+
+    config.allowUnfreePredicate =
+      pkg:
+      builtins.elem (lib.getName pkg) [
+        "google-chrome"
+      ];
+  };
 
   programs.zsh = {
     enable = true;
@@ -64,8 +74,6 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
   users.users.${userName} = {
     home = "/Users/${userName}";
   };
@@ -80,6 +88,8 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+
+    extraSpecialArgs = { inherit direnv-instant; };
 
     users.${userName} = import ../../users/darwin.hm.nix;
   };

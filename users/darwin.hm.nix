@@ -2,24 +2,28 @@
   lib,
   pkgs,
   config,
+  direnv-instant,
   ...
 }:
 
 {
   imports = [
+    direnv-instant.homeModules.direnv-instant
     ./hm.nix
   ];
 
   programs = {
     zsh = {
       enable = true;
-      initContent = "eval \"$(direnv hook zsh)\"";
+      initContent = "eval \"$(direnv-instant hook zsh)\"";
     };
 
     direnv = {
       enable = true;
       nix-direnv.enable = true;
     };
+
+    direnv-instant.enable = true;
 
     git = {
       enable = true;
@@ -97,6 +101,7 @@
       fzf
       lazygit
       gh
+      google-chrome
 
       aria2
       container
@@ -124,6 +129,7 @@
       waifu2x-ncnn-vulkan
       katago
       anylinuxfs
+      portal-stillalive-rust
     ];
   };
 }

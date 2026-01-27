@@ -4,6 +4,7 @@
   userName,
   hostName,
   home-manager,
+  direnv-instant,
   ...
 }:
 
@@ -14,6 +15,7 @@ let
 in
 {
   imports = [
+    ../../modules/unfree-accumulator.nix
     ./hardware-configuration.nix
     home-manager.nixosModules.home-manager
     ../../modules/desktop-sway.nix
@@ -28,7 +30,12 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  nixpkgs.config.allowUnfree = true;
+  unfreePackages.packages = [
+    [
+      "1password"
+      "1password-cli"
+    ]
+  ];
 
   services = {
     dbus.enable = true;
@@ -150,6 +157,7 @@ in
     btop
 
     firefox
+    chromium
   ];
 
   users.users.${userName} = {
@@ -164,6 +172,9 @@ in
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+
+    extraSpecialArgs = { inherit direnv-instant; };
+
     users.${userName} = import ../../users/nixos.hm.nix;
   };
 

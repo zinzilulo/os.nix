@@ -9,14 +9,14 @@
   zlib,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation rec {
   pname = "katago";
   version = "1.16.4";
 
   src = fetchFromGitHub {
     owner = "lightvector";
     repo = "KataGo";
-    rev = "v${finalAttrs.version}";
+    rev = "v${version}";
     hash = "sha256-UGj3tWQ9NiXZ5PvU/K7zA54q4+CNUZ5iOe3+heqcA4g=";
   };
 
@@ -63,7 +63,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   configurePhase = ''
     runHook preConfigure
-    cmake -S cpp -B build ${lib.concatStringsSep " " finalAttrs.cmakeFlags}
+    cmake -S cpp -B build ${lib.concatStringsSep " " cmakeFlags}
     runHook postConfigure
   '';
 
@@ -82,9 +82,9 @@ stdenv.mkDerivation (finalAttrs: {
     mkdir -p $out/share/katago
     cp -r cpp/configs $out/share/katago/configs
 
-    install -m644 ${finalAttrs.b18c384nbt} $out/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
-    install -m644 ${finalAttrs.network20b} $out/share/katago/g170e-b20c256x2-s5303129600-d1228401921.bin.gz
-    install -m644 ${finalAttrs.network40b} $out/share/katago/g170-b40c256x2-s5095420928-d1229425124.bin.gz
+    install -m644 ${b18c384nbt} $out/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
+    install -m644 ${network20b} $out/share/katago/g170e-b20c256x2-s5303129600-d1228401921.bin.gz
+    install -m644 ${network40b} $out/share/katago/g170-b40c256x2-s5095420928-d1229425124.bin.gz
 
     runHook postInstall
   '';
@@ -107,4 +107,4 @@ stdenv.mkDerivation (finalAttrs: {
     mainProgram = "katago";
     platforms = [ "aarch64-darwin" ];
   };
-})
+}

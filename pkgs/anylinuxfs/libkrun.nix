@@ -1,7 +1,6 @@
 {
   lib,
   fetchFromGitHub,
-  fetchurl,
   rustPlatform,
   pkg-config,
   dtc,
@@ -15,24 +14,20 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "libkrun";
-  version = "1.16.0";
+  version = "1.17.0";
 
   src = fetchFromGitHub {
     owner = "containers";
     repo = "libkrun";
-    rev = "943e6d9";
-    hash = "sha256-ZMR6+psxA8IOidilcZxoiwiL4Npo6kBmGDt/96oTjdE=";
+    rev = "v${version}";
+    hash = "sha256-6HBSL5Zu29sDoEbZeQ6AsNIXUcqXVVGMk0AR2X6v1yU=";
   };
 
   patches = [
-    (fetchurl {
-      url = "https://raw.githubusercontent.com/slp/homebrew-krun/533300d/patches/libkrun-makefile-add-cross-compilation-support.diff";
-      hash = "sha256-LZjgJSVaBJjQac1+WF7P25gnfeyeIpECtch1rDAkVn0=";
-    })
     ./no-mv.patch
   ];
 
-  cargoHash = "sha256-WZDLz560Un+2P+I6y9V3RB4jiHW0NLN0X8y2TAvwFp8=";
+  cargoHash = "sha256-UIzbtBJH6aivoIxko1Wxdod/jUN44pERX9Hd+v7TC3Q=";
 
   dontCargoBuild = true;
 

@@ -16,7 +16,7 @@ llvmPackages.stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "nihui";
     repo = "waifu2x-ncnn-vulkan";
-    rev = "a86cfb0";
+    rev = version;
     hash = "sha256-V1ZeLNjt5VZGVfhkaHMYd1Np9FYs15W4pby2QFgKyv8=";
     fetchSubmodules = true;
   };

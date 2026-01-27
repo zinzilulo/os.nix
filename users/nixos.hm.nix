@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  direnv-instant,
   ...
 }:
 
@@ -9,6 +10,8 @@ let
 in
 {
   imports = [
+    direnv-instant.homeModules.direnv-instant
+
     ./hm.nix
     ./sway.hm.nix
     ./i3.hm.nix
@@ -18,13 +21,15 @@ in
   programs = {
     bash = {
       enable = true;
-      initExtra = "eval \"$(direnv hook bash)\"";
+      initExtra = "eval \"$(direnv-instant hook bash)\"";
     };
 
     direnv = {
       enable = true;
       nix-direnv.enable = true;
     };
+
+    direnv-instant.enable = true;
 
     alacritty = {
       enable = true;
