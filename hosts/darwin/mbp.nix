@@ -50,12 +50,6 @@
         portal-stillalive-rust = final.callPackage (self + /pkgs/still-alive/package.nix) { };
       })
     ];
-
-    config.allowUnfreePredicate =
-      pkg:
-      builtins.elem (lib.getName pkg) [
-        "google-chrome"
-      ];
   };
 
   programs.zsh = {
@@ -89,7 +83,9 @@
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    extraSpecialArgs = { inherit direnv-instant; };
+    extraSpecialArgs = {
+      inherit direnv-instant;
+    };
 
     users.${userName} = import ../../users/darwin.hm.nix;
   };

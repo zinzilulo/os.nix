@@ -39,7 +39,7 @@
   };
 
   home = {
-    stateVersion = "25.11";
+    stateVersion = "26.05";
 
     activation.katagoDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p ${lib.escapeShellArg (config.xdg.stateHome + "/katago/gtp_logs")}
@@ -101,7 +101,6 @@
       fzf
       lazygit
       gh
-      google-chrome
 
       aria2
       container

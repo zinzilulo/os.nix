@@ -81,15 +81,14 @@ in
     vim.opt.syntax = "enable"
     vim.opt.cursorline = true
     vim.opt.relativenumber = true
-    vim.opt.number = true
     vim.opt.modeline = true
+    vim.opt.expandtab = true
     vim.opt.tabstop = 2
     vim.opt.shiftwidth = 2
-    vim.opt.expandtab = true
+    vim.opt.autoindent = true
+    vim.opt.smartindent = true
     vim.opt.ignorecase = true
     vim.opt.smartcase = true
-    vim.opt.autoindent = true
-    vim.opt.autochdir = true
     vim.opt.clipboard = "unnamedplus"
 
     vim.keymap.set("v", ">", ">gv", { noremap = true })

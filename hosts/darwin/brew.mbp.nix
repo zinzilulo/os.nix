@@ -3,6 +3,10 @@ let
     "th-ch/youtube-music"
   ];
 
+  brews = [
+    "container"
+  ];
+
   autoUpdatedCasks = [
     "1password"
     "adguard"
@@ -63,7 +67,7 @@ in
 
     onActivation.cleanup = "zap";
 
-    inherit taps;
+    inherit taps brews;
 
     casks = autoUpdatedCasks ++ notAutoUpdatedCasks ++ actuallyAutoUpdatedCasks;
   };

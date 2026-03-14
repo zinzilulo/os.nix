@@ -2,13 +2,13 @@
   description = "Flaky OS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager/master";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     direnv-instant.url = "github:Mic92/direnv-instant";
   };
@@ -17,12 +17,12 @@
     {
       self,
       direnv-instant,
-      nixpkgs,
+      nixpkgs-unstable,
       nix-darwin,
       home-manager,
     }:
     let
-      inherit (nixpkgs) lib;
+      inherit (nixpkgs-unstable) lib;
 
       systems = [
         "x86_64-linux"
@@ -57,7 +57,7 @@
       devShells = forAllSystems (
         system:
         let
-          pkgs = import nixpkgs {
+          pkgs = import nixpkgs-unstable {
             inherit system;
           };
         in

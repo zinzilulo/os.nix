@@ -156,7 +156,6 @@ in
     fastfetch
     btop
 
-    firefox
     chromium
   ];
 
@@ -178,5 +177,5 @@ in
     users.${userName} = import ../../users/nixos.hm.nix;
   };
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
