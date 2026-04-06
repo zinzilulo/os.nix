@@ -1,13 +1,9 @@
 {
-  lib,
   pkgs,
   direnv-instant,
   ...
 }:
 
-let
-  onePassPath = "~/.1password/agent.sock";
-in
 {
   imports = [
     direnv-instant.homeModules.direnv-instant
@@ -17,9 +13,6 @@ in
     ./i3.hm.nix
     ./i3status.hm.nix
   ];
-
-  xresources.properties."Xft.dpi" = "192";
-  wayland.windowManager.sway.config.output."Virtual-1".scale = "2";
 
   programs = {
     bash = {
@@ -33,19 +26,6 @@ in
     };
 
     direnv-instant.enable = true;
-
-    alacritty = {
-      enable = true;
-      settings = {
-        font = {
-          normal.family = "SF Mono";
-          bold.family = "SF Mono";
-          italic.family = "SF Mono";
-          size = 11.0;
-        };
-        terminal.shell.program = "bash";
-      };
-    };
 
     ssh = {
       enable = true;
@@ -63,8 +43,6 @@ in
         controlMaster = "no";
         controlPath = "~/.ssh/master-%r@%n:%p";
         controlPersist = "no";
-
-        identityAgent = onePassPath;
       };
     };
 
@@ -74,9 +52,6 @@ in
       package = pkgs.git.override { withLibsecret = true; };
       settings = {
         credential.helper = "libsecret";
-        "gpg \"ssh\"" = {
-          program = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
-        };
       };
     };
   };
@@ -90,45 +65,13 @@ in
     ];
   };
 
-  systemd.user.services.polkit-gnome-authentication-agent-1 = {
-    Unit = {
-      Description = "polkit-gnome-authentication-agent-1";
-      PartOf = [ "graphical-session.target" ];
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
-
   home = {
-    pointerCursor = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
-      size = 24;
-      x11 = {
-        enable = true;
-        defaultCursor = "Adwaita";
-      };
-      gtk.enable = true;
-      sway.enable = true;
-    };
-
     packages = with pkgs; [
       ripgrep
       fd
       fzf
       lazygit
       gh
-
-      xclip
-      wl-clipboard
     ];
 
     sessionPath = [ "$HOME/.local/bin" ];

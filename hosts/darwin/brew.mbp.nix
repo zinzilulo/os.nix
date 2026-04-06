@@ -44,6 +44,7 @@ let
   notAutoUpdatedCasks = [
     "th-ch/youtube-music/youtube-music"
     "adobe-digital-editions"
+    "apparency"
     "calibre"
     "inkscape"
     "keyboardcleantool"
@@ -53,7 +54,6 @@ let
   ];
 
   actuallyAutoUpdatedCasks = [
-    "apparency"
     "audacity"
     "dictionaries"
     "mp3tag"

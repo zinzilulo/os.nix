@@ -34,24 +34,6 @@
       forAllSystems = f: lib.genAttrs systems f;
 
       local = import ./local/default.nix;
-
-      mkHost =
-        {
-          system,
-          key,
-        }:
-        lib.nixosSystem {
-          inherit system;
-
-          specialArgs = {
-            inherit self home-manager;
-            inherit (local) userName;
-            inherit direnv-instant;
-            hostName = local.hosts.${key};
-          };
-
-          modules = [ ./hosts/nixos/default.nix ];
-        };
     in
     {
       devShells = forAllSystems (
@@ -81,14 +63,56 @@
       );
 
       nixosConfigurations = {
-        nixos-x86_64 = mkHost {
+        nixos-homelab = lib.nixosSystem {
           system = "x86_64-linux";
-          key = "nixos-x86_64";
+
+          specialArgs = {
+            inherit self home-manager;
+            inherit (local) userName;
+            inherit direnv-instant;
+            hostName = local.hosts."nixos-homelab";
+          };
+
+          modules = [ ./hosts/homelab/default.nix ];
         };
 
-        nixos-aarch64 = mkHost {
+        nixos-homelab-lxc = lib.nixosSystem {
+          system = "x86_64-linux";
+
+          specialArgs = {
+            inherit self home-manager;
+            inherit (local) userName;
+            inherit direnv-instant;
+            hostName = local.hosts."nixos-homelab-lxc";
+          };
+
+          modules = [ ./hosts/homelab-lxc/default.nix ];
+        };
+
+        nixos-x86_64 = lib.nixosSystem {
+          system = "x86_64-linux";
+
+          specialArgs = {
+            inherit self home-manager;
+            inherit (local) userName;
+            inherit direnv-instant;
+            hostName = local.hosts."nixos-x86_64";
+          };
+
+          modules = [ ./hosts/nixos/default.nix ];
+        };
+
+        nixos-aarch64 = lib.nixosSystem {
           system = "aarch64-linux";
-          key = "nixos-aarch64";
+
+          specialArgs = {
+            inherit self home-manager;
+            inherit (local) userName;
+            inherit direnv-instant;
+            hostName = local.hosts."nixos-aarch64";
+          };
+
+          modules = [ ./hosts/nixos/default.nix ];
         };
       };
 

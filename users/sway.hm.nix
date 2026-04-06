@@ -10,8 +10,6 @@ in
       modifier = wm.mod;
       fonts = wm.commonFonts;
 
-      output."Virtual-1".scale = "2";
-
       terminal = "alacritty";
       menu = "bemenu-run --prompt ''";
       floating.modifier = wm.mod;
