@@ -43,7 +43,6 @@
 
     overlays = [
       (final: prev: {
-        anylinuxfs = final.callPackage (self + /pkgs/anylinuxfs/package.nix) { };
         katago = final.callPackage (self + /pkgs/katago/package.nix) { };
         waifu2x-ncnn-vulkan = final.callPackage (self + /pkgs/waifu2x-ncnn-vulkan/package.nix) { };
         portal-stillalive-rust = final.callPackage (self + /pkgs/still-alive/package.nix) { };

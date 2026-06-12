@@ -27,25 +27,6 @@
 
     direnv-instant.enable = true;
 
-    ssh = {
-      enable = true;
-
-      enableDefaultConfig = false;
-
-      matchBlocks."*" = {
-        forwardAgent = false;
-        addKeysToAgent = "no";
-        compression = false;
-        serverAliveInterval = 0;
-        serverAliveCountMax = 3;
-        hashKnownHosts = false;
-        userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "no";
-        controlPath = "~/.ssh/master-%r@%n:%p";
-        controlPersist = "no";
-      };
-    };
-
     git = {
       enable = true;
       lfs.enable = true;
@@ -54,15 +35,6 @@
         credential.helper = "libsecret";
       };
     };
-  };
-
-  services.gnome-keyring = {
-    enable = true;
-    components = [
-      "secrets"
-      "ssh"
-      "pkcs11"
-    ];
   };
 
   home = {
@@ -76,6 +48,6 @@
 
     sessionPath = [ "$HOME/.local/bin" ];
 
-    stateVersion = "26.05";
+    stateVersion = "26.11";
   };
 }

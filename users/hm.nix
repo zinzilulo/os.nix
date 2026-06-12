@@ -48,11 +48,6 @@ in
     emacs = {
       enable = true;
 
-      extraPackages =
-        epkgs: with epkgs; [
-          evil
-        ];
-
       extraConfig = ''
         (tool-bar-mode -1)
         ${lib.optionalString (!isDarwin) ''
@@ -70,9 +65,6 @@ in
               (load-theme 'xcode-dark t))
           (error
            (message "Could not load xcode-dark-theme: %s" err)))
-
-        (require 'evil)
-        (evil-mode 1)
       '';
     };
   };
@@ -94,9 +86,4 @@ in
     vim.keymap.set("v", ">", ">gv", { noremap = true })
     vim.keymap.set("v", "<", "<gv", { noremap = true })
   '';
-
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-  };
 }

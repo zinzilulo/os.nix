@@ -5,9 +5,6 @@
   ...
 }:
 
-let
-  onePassPath = "~/.1password/agent.sock";
-in
 {
   imports = [
     direnv-instant.homeModules.direnv-instant
@@ -47,24 +44,23 @@ in
       };
     };
 
+    kitty = {
+      enable = true;
+      font = {
+        name = "SF Mono";
+        size = 11.0;
+      };
+    };
+
     ssh = {
       enable = true;
-
       enableDefaultConfig = false;
-
-      matchBlocks."*" = {
-        forwardAgent = false;
-        addKeysToAgent = "no";
-        compression = false;
-        serverAliveInterval = 0;
-        serverAliveCountMax = 3;
-        hashKnownHosts = false;
-        userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "no";
-        controlPath = "~/.ssh/master-%r@%n:%p";
-        controlPersist = "no";
-
-        identityAgent = onePassPath;
+      settings = {
+        "*" = {
+          ForwardAgent = false;
+          AddKeysToAgent = "no";
+          IdentityAgent = "~/.1password/agent.sock";
+        };
       };
     };
 
@@ -79,15 +75,6 @@ in
         };
       };
     };
-  };
-
-  services.gnome-keyring = {
-    enable = true;
-    components = [
-      "secrets"
-      "ssh"
-      "pkcs11"
-    ];
   };
 
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
@@ -108,6 +95,8 @@ in
   };
 
   home = {
+    file.".background-image".source = ../wallpapers;
+
     pointerCursor = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
@@ -127,12 +116,15 @@ in
       lazygit
       gh
 
+      cloc
+      git-fame
+
       xclip
       wl-clipboard
     ];
 
     sessionPath = [ "$HOME/.local/bin" ];
 
-    stateVersion = "26.05";
+    stateVersion = "26.11";
   };
 }

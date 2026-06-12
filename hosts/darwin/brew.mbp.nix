@@ -1,8 +1,4 @@
 let
-  taps = [
-    "th-ch/youtube-music"
-  ];
-
   brews = [
     "container"
   ];
@@ -13,6 +9,7 @@ let
     "app-cleaner"
     "bartender"
     "betterzip"
+    "chatgpt"
     "coconutbattery"
     "crossover"
     "daisydisk"
@@ -35,6 +32,7 @@ let
     "spotify"
     "steam"
     "swish"
+    "thaw"
     "tor-browser"
     "typora"
     "vlc"
@@ -42,7 +40,7 @@ let
   ];
 
   notAutoUpdatedCasks = [
-    "th-ch/youtube-music/youtube-music"
+    "pear-devs/pear/pear-desktop"
     "adobe-digital-editions"
     "apparency"
     "calibre"
@@ -65,9 +63,9 @@ in
   homebrew = {
     enable = true;
 
-    onActivation.cleanup = "zap";
+    onActivation.cleanup = "check";
 
-    inherit taps brews;
+    inherit brews;
 
     casks = autoUpdatedCasks ++ notAutoUpdatedCasks ++ actuallyAutoUpdatedCasks;
   };

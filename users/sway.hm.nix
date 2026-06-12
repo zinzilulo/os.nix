@@ -23,7 +23,21 @@ in
           statusCommand = "i3status";
         }
       ];
+
+      startup = [
+        {
+          # Start swaybg using a glob from ~/.background-image.
+          # Works only if exactly one image is present.
+          command = "${pkgs.swaybg}/bin/swaybg -i $HOME/.background-image/* -m fill";
+          always = true;
+        }
+      ];
     };
+
+    # Make Parallels Tools clipboard window float instead of tiling
+    extraConfig = ''
+      for_window [title="Parallels Shared Clipboard"] floating enable
+    '';
   };
 
   programs.bemenu.enable = true;

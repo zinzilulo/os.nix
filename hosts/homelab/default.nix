@@ -33,6 +33,8 @@
     printing.enable = true;
 
     qemuGuest.enable = true;
+
+    gnome.gnome-keyring.enable = true;
   };
 
   security = {
@@ -80,17 +82,26 @@
 
   virtualisation.docker.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    git
-    curl
-    wget
+  environment = {
+    sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+      GIT_EDITOR = "nvim";
+    };
 
-    neovim
+    systemPackages = with pkgs; [
+      file
+      git
+      curl
+      wget
 
-    tmux
-    fastfetch
-    btop
-  ];
+      neovim
+
+      tmux
+      fastfetch
+      btop
+    ];
+  };
 
   users.users.${userName} = {
     isNormalUser = true;
@@ -113,5 +124,5 @@
     users.${userName} = import ../../users/homelab.hm.nix;
   };
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
 }

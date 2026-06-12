@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   self,
   userName,
@@ -53,6 +54,21 @@ in
     };
 
     printing.enable = true;
+
+    gnome.gnome-keyring.enable = true;
+
+    greetd = {
+      enable = true;
+
+      useTextGreeter = true;
+
+      settings = {
+        default_session = {
+          user = "greeter";
+          command = "${pkgs.tuigreet}/bin/tuigreet --xsessions ${config.services.displayManager.sessionData.desktops}/share/xsessions --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions --remember --remember-user-session";
+        };
+      };
+    };
   };
 
   security = {
@@ -106,6 +122,8 @@ in
     };
   };
 
+  documentation.dev.enable = true;
+
   networking = {
     inherit hostName;
 
@@ -144,20 +162,29 @@ in
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    git
-    curl
-    wget
+  environment = {
+    sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+      GIT_EDITOR = "nvim";
+    };
 
-    neovim
-    emacs
+    systemPackages = with pkgs; [
+      file
+      git
+      curl
+      wget
 
-    tmux
-    fastfetch
-    btop
+      neovim
+      emacs
 
-    chromium
-  ];
+      tmux
+      fastfetch
+      btop
+
+      chromium
+    ];
+  };
 
   users.users.${userName} = {
     isNormalUser = true;
@@ -177,5 +204,5 @@ in
     users.${userName} = import ../../users/nixos.hm.nix;
   };
 
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
 }

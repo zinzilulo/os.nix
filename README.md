@@ -6,18 +6,18 @@ The flake defines these configurations:
 
 ### NixOS (`nixosConfigurations`)
 
-| Flake name      | System        | Host key            |
-|-----------------|---------------|---------------------|
-| `nixos-homelab` | x86_64-linux  | `nixos-homelab`     |
-| `nixos-homelab` | x86_64-linux  | `nixos-homelab-lxc` |
-| `nixos-x86_64`  | x86_64-linux  | `nixos-x86_64`      |
-| `nixos-aarch64` | aarch64-linux | `nixos-aarch64`     |
+| Flake name      | System        | Host key            | Built (latest)  | Tested (latest) |
+|-----------------|---------------|---------------------|-----------------|-----------------|
+| `nixos-homelab` | x86_64-linux  | `nixos-homelab`     | N/A             | N/A             |
+| `nixos-homelab` | x86_64-linux  | `nixos-homelab-lxc` | N/A             | N/A             |
+| `nixos-x86_64`  | x86_64-linux  | `nixos-x86_64`      | N/A             | N/A             |
+| `nixos-aarch64` | aarch64-linux | `nixos-aarch64`     | 2026-06-12      | 2026-06-12      |
 
 ### macOS (`darwinConfigurations`)
 
-| Flake name   | System         | Host key     |
-|--------------|----------------|--------------|
-| `darwin-mbp` | aarch64-darwin | `darwin-mbp` |
+| Flake name   | System         | Host key     | Built (latest)  | Tested (latest) |
+|--------------|----------------|--------------|-----------------|-----------------|
+| `darwin-mbp` | aarch64-darwin | `darwin-mbp` | 2026-06-12      | 2026-06-12      |
 
 ## Username and Hostnames
 
@@ -52,9 +52,11 @@ sudo nixos-generate-config --show-hardware-config \
   > hosts/homelab/hardware-configuration.nix
 ```
 
-## Caveats (NixOS)
+## Caveats
 
+- KataGo overlay requires Xcode to build on Darwin.
 - Needs `WLR_NO_HARDWARE_CURSORS=1` for proper cursor rendering under Sway in Parallels
+- `home.sessionVariables` does not propagate reliably in GNOME/Sway sessions
 
 ## Commands
 

@@ -16,6 +16,7 @@
     zsh = {
       enable = true;
       initContent = "eval \"$(direnv-instant hook zsh)\"";
+      profileExtra = "eval \"$(/opt/homebrew/bin/brew shellenv)\"";
     };
 
     direnv = {
@@ -39,7 +40,7 @@
   };
 
   home = {
-    stateVersion = "26.05";
+    stateVersion = "26.11";
 
     activation.katagoDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p ${lib.escapeShellArg (config.xdg.stateHome + "/katago/gtp_logs")}
@@ -102,6 +103,9 @@
       lazygit
       gh
 
+      cloc
+      git-fame
+
       aria2
       container
       exiftool
@@ -127,7 +131,6 @@
 
       waifu2x-ncnn-vulkan
       katago
-      anylinuxfs
       portal-stillalive-rust
     ];
   };

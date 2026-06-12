@@ -4,10 +4,10 @@
   services = {
     libinput.enable = true;
 
-    displayManager.gdm.enable = true;
-
     xserver = {
       enable = true;
+
+      displayManager.startx.enable = true;
 
       windowManager.i3 = {
         enable = true;

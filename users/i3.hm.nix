@@ -23,6 +23,20 @@ in
           statusCommand = "i3status";
         }
       ];
+
+      startup = [
+        {
+          command = "${pkgs.feh}/bin/feh --bg-fill $HOME/.background-image";
+          always = true;
+          notification = false;
+        }
+
+        {
+          command = "xrdb -merge ~/.Xresources";
+          always = true;
+          notification = false;
+        }
+      ];
     };
   };
 

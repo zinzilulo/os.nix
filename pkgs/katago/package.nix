@@ -3,29 +3,35 @@
   stdenv,
   fetchFromGitHub,
   fetchurl,
+  swift,
   cmake,
   ninja,
   libzip,
+  pkg-config,
+  protobuf,
   zlib,
 }:
 
 stdenv.mkDerivation rec {
   pname = "katago";
-  version = "1.16.4";
+  version = "1.16.5";
 
   src = fetchFromGitHub {
     owner = "lightvector";
     repo = "KataGo";
     rev = "v${version}";
-    hash = "sha256-UGj3tWQ9NiXZ5PvU/K7zA54q4+CNUZ5iOe3+heqcA4g=";
+    hash = "sha256-+s4JO6+UMyeSHUqyRFEhJD2kmsdhcydanFWjTqxC1Tc=";
   };
 
   nativeBuildInputs = [
     cmake
     ninja
+    swift
+    pkg-config
   ];
 
   buildInputs = [
+    protobuf
     libzip
     zlib
   ];
@@ -45,37 +51,26 @@ stdenv.mkDerivation rec {
     hash = "sha256-Kzp4mB0ra1+uHPiXLgG/PkjSspG8XlLvQcm2XFPVmnE=";
   };
 
-  preConfigure = ''
-    export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer"
-    export SDKROOT="$(/usr/bin/xcrun --sdk macosx --show-sdk-path)"
-    export SWIFTC="$(/usr/bin/xcrun --find swiftc)"
-
-    export CC="$DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
-    export CXX="$DEVELOPER_DIR/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
-  '';
-
   cmakeFlags = [
     "-DNO_GIT_REVISION=1"
     "-DUSE_BACKEND=METAL"
     "-GNinja"
-    "-DCMAKE_Swift_COMPILER=$SWIFTC"
   ];
 
   configurePhase = ''
-    runHook preConfigure
+    export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer"
+    export SDKROOT="$(/usr/bin/xcrun --sdk macosx --show-sdk-path)"
+    export CC="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang";
+    export CXX="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++";
+
     cmake -S cpp -B build ${lib.concatStringsSep " " cmakeFlags}
-    runHook postConfigure
   '';
 
   buildPhase = ''
-    runHook preBuild
     cmake --build build
-    runHook postBuild
   '';
 
   installPhase = ''
-    runHook preInstall
-
     mkdir -p $out/bin
     install -m755 build/katago $out/bin/katago
 
@@ -85,16 +80,12 @@ stdenv.mkDerivation rec {
     install -m644 ${b18c384nbt} $out/share/katago/kata1-b18c384nbt-s9996604416-d4316597426.bin.gz
     install -m644 ${network20b} $out/share/katago/g170e-b20c256x2-s5303129600-d1228401921.bin.gz
     install -m644 ${network40b} $out/share/katago/g170-b40c256x2-s5095420928-d1229425124.bin.gz
-
-    runHook postInstall
   '';
 
   doCheck = true;
   checkPhase = ''
-    runHook preCheck
     ./build/katago version
     ./build/katago runtests | tail -n 1 | grep -E "All tests passed$"
-    runHook postCheck
   '';
 
   meta = with lib; {

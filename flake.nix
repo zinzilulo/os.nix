@@ -2,7 +2,8 @@
   description = "Flaky OS";
 
   inputs = {
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -17,13 +18,12 @@
     {
       self,
       direnv-instant,
+      nixos-unstable,
       nixpkgs-unstable,
       nix-darwin,
       home-manager,
     }:
     let
-      inherit (nixpkgs-unstable) lib;
-
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -31,7 +31,7 @@
         "aarch64-darwin"
       ];
 
-      forAllSystems = f: lib.genAttrs systems f;
+      forAllSystems = f: nixpkgs-unstable.lib.genAttrs systems f;
 
       local = import ./local/default.nix;
     in
@@ -53,7 +53,6 @@
 
             shellHook = ''
               echo "Nix Shell:"
-              echo "statix:        $(statix --version)"
               echo "deadnix:       $(deadnix --version)"
               echo "nixfmt-tree:   $(treefmt --version)"
               echo "nix:           $(nix --version)"
@@ -63,7 +62,7 @@
       );
 
       nixosConfigurations = {
-        nixos-homelab = lib.nixosSystem {
+        nixos-homelab = nixos-unstable.lib.nixosSystem {
           system = "x86_64-linux";
 
           specialArgs = {
@@ -76,7 +75,7 @@
           modules = [ ./hosts/homelab/default.nix ];
         };
 
-        nixos-homelab-lxc = lib.nixosSystem {
+        nixos-homelab-lxc = nixos-unstable.lib.nixosSystem {
           system = "x86_64-linux";
 
           specialArgs = {
@@ -89,7 +88,7 @@
           modules = [ ./hosts/homelab-lxc/default.nix ];
         };
 
-        nixos-x86_64 = lib.nixosSystem {
+        nixos-x86_64 = nixos-unstable.lib.nixosSystem {
           system = "x86_64-linux";
 
           specialArgs = {
@@ -102,7 +101,7 @@
           modules = [ ./hosts/nixos/default.nix ];
         };
 
-        nixos-aarch64 = lib.nixosSystem {
+        nixos-aarch64 = nixos-unstable.lib.nixosSystem {
           system = "aarch64-linux";
 
           specialArgs = {
