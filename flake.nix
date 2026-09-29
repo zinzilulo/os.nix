@@ -12,6 +12,10 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     direnv-instant.url = "github:Mic92/direnv-instant";
+    direnv-instant.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   outputs =
@@ -20,6 +24,7 @@
       direnv-instant,
       nixos-unstable,
       nixpkgs-unstable,
+      nixos-wsl,
       nix-darwin,
       home-manager,
     }:
@@ -34,6 +39,31 @@
       forAllSystems = f: nixpkgs-unstable.lib.genAttrs systems f;
 
       local = import ./local/default.nix;
+
+      mkNixos =
+        {
+          hostName,
+          system,
+          modules,
+          isWSL ? false,
+        }:
+        nixos-unstable.lib.nixosSystem {
+          inherit system;
+
+          specialArgs = {
+            inherit home-manager direnv-instant;
+            inherit (local) userName;
+            nixos-pkgs = nixos-unstable.legacyPackages.${system};
+            nixpkgs-pkgs = nixpkgs-unstable.legacyPackages.${system};
+            inherit hostName;
+          }
+          // nixos-unstable.lib.optionalAttrs isWSL {
+            inherit nixos-wsl;
+          };
+
+          inherit modules;
+        };
+
     in
     {
       devShells = forAllSystems (
@@ -48,88 +78,81 @@
             packages = with pkgs; [
               statix
               deadnix
-              nixfmt-tree
             ];
 
             shellHook = ''
               echo "Nix Shell:"
               echo "deadnix:       $(deadnix --version)"
-              echo "nixfmt-tree:   $(treefmt --version)"
               echo "nix:           $(nix --version)"
             '';
           };
         }
       );
 
+      formatter = forAllSystems (system: nixpkgs-unstable.legacyPackages.${system}.nixfmt-tree);
+
       nixosConfigurations = {
-        nixos-homelab = nixos-unstable.lib.nixosSystem {
+        nixos-wsl = mkNixos {
+          hostName = local.hosts."nixos-wsl";
           system = "x86_64-linux";
+          modules = [ ./hosts/wsl/default.nix ];
+          isWSL = true;
+        };
 
-          specialArgs = {
-            inherit self home-manager;
-            inherit (local) userName;
-            inherit direnv-instant;
-            hostName = local.hosts."nixos-homelab";
-          };
-
+        nixos-homelab = mkNixos {
+          hostName = local.hosts."nixos-homelab";
+          system = "x86_64-linux";
           modules = [ ./hosts/homelab/default.nix ];
         };
 
-        nixos-homelab-lxc = nixos-unstable.lib.nixosSystem {
+        nixos-homelab-lxc = mkNixos {
+          hostName = local.hosts."nixos-homelab-lxc";
           system = "x86_64-linux";
-
-          specialArgs = {
-            inherit self home-manager;
-            inherit (local) userName;
-            inherit direnv-instant;
-            hostName = local.hosts."nixos-homelab-lxc";
-          };
-
           modules = [ ./hosts/homelab-lxc/default.nix ];
         };
 
-        nixos-x86_64 = nixos-unstable.lib.nixosSystem {
+        parallels-x86_64 = mkNixos {
+          hostName = local.hosts."nixos-x86_64";
           system = "x86_64-linux";
-
-          specialArgs = {
-            inherit self home-manager;
-            inherit (local) userName;
-            inherit direnv-instant;
-            hostName = local.hosts."nixos-x86_64";
-          };
-
-          modules = [ ./hosts/nixos/default.nix ];
+          modules = [ ./hosts/parallels/default.nix ];
         };
 
-        nixos-aarch64 = nixos-unstable.lib.nixosSystem {
+        qemu_amd-x86-64 = mkNixos {
+          hostName = local.hosts."nixos-x86_64";
+          system = "x86_64-linux";
+          modules = [ ./hosts/qemu_amd-x86-64/default.nix ];
+        };
+
+        parallels-aarch64 = mkNixos {
+          hostName = local.hosts."nixos-aarch64";
           system = "aarch64-linux";
-
-          specialArgs = {
-            inherit self home-manager;
-            inherit (local) userName;
-            inherit direnv-instant;
-            hostName = local.hosts."nixos-aarch64";
-          };
-
-          modules = [ ./hosts/nixos/default.nix ];
+          modules = [ ./hosts/parallels/default.nix ];
         };
       };
 
       darwinConfigurations = {
-        darwin-mbp = nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
+        darwin-mbp =
+          let
+            system = "aarch64-darwin";
+          in
+          nix-darwin.lib.darwinSystem {
 
-          specialArgs = {
-            inherit self home-manager;
-            inherit (local) userName;
-            inherit direnv-instant;
-            hostName = local.hosts."darwin-mbp";
+            specialArgs = {
+              inherit
+                self
+                system
+                home-manager
+                direnv-instant
+                ;
+              inherit (local) userName;
+              nixpkgs-pkgs = nixpkgs-unstable.legacyPackages.${system};
+              hostName = local.hosts."darwin-mbp";
+            };
+
+            modules = [
+              ./hosts/darwin/mbp.nix
+            ];
           };
-
-          modules = [
-            ./hosts/darwin/mbp.nix
-          ];
-        };
       };
     };
 }

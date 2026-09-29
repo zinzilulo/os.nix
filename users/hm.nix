@@ -8,7 +8,7 @@ let
     hash = "sha256-Mzh9SBV4EhQkgElVRAcg5q32wPnro5tVGGUUS0NqebE=";
   };
 
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs) stdenv;
 in
 {
   programs = {
@@ -50,7 +50,7 @@ in
 
       extraConfig = ''
         (tool-bar-mode -1)
-        ${lib.optionalString (!isDarwin) ''
+        ${lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
           (menu-bar-mode -1)
         ''}
         (scroll-bar-mode -1)

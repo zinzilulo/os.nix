@@ -1,6 +1,7 @@
 {
   pkgs,
   self,
+  system,
   userName,
   hostName,
   home-manager,
@@ -8,7 +9,23 @@
   ...
 }:
 
+let
+  nixpkgs = {
+    hostPlatform = system;
+
+    overlays = [
+      (final: prev: {
+        katago = final.callPackage (../../pkgs/katago/package.nix) { };
+        waifu2x-ncnn-vulkan = final.callPackage (../../pkgs/waifu2x-ncnn-vulkan/package.nix) { };
+        portal-stillalive-rust = final.callPackage (../../pkgs/still-alive/package.nix) { };
+        lq = final.callPackage (../../pkgs/lq/package.nix) { };
+      })
+    ];
+  };
+in
 {
+  inherit nixpkgs;
+
   imports = [
     ./brew.mbp.nix
     home-manager.darwinModules.home-manager
@@ -18,6 +35,7 @@
 
   environment.systemPackages = with pkgs; [
     git
+    lazygit
     curl
     wget
 
@@ -28,6 +46,11 @@
     fastfetch
     btop
     macmon
+
+    rlwrap
+
+    fd
+    ripgrep
   ];
 
   nix = {
@@ -35,18 +58,6 @@
     settings.experimental-features = [
       "nix-command"
       "flakes"
-    ];
-  };
-
-  nixpkgs = {
-    hostPlatform = "aarch64-darwin";
-
-    overlays = [
-      (final: prev: {
-        katago = final.callPackage (self + /pkgs/katago/package.nix) { };
-        waifu2x-ncnn-vulkan = final.callPackage (self + /pkgs/waifu2x-ncnn-vulkan/package.nix) { };
-        portal-stillalive-rust = final.callPackage (self + /pkgs/still-alive/package.nix) { };
-      })
     ];
   };
 
@@ -82,7 +93,7 @@
     useUserPackages = true;
 
     extraSpecialArgs = {
-      inherit direnv-instant;
+      direnv-instant = direnv-instant.homeModules.direnv-instant;
     };
 
     users.${userName} = import ../../users/darwin.hm.nix;

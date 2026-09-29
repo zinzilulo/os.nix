@@ -7,8 +7,7 @@
 
 {
   imports = [
-    direnv-instant.homeModules.direnv-instant
-
+    direnv-instant
     ./hm.nix
     ./sway.hm.nix
     ./i3.hm.nix
@@ -98,6 +97,7 @@
     file.".background-image".source = ../wallpapers;
 
     pointerCursor = {
+      enable = true;
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
       size = 24;
@@ -110,13 +110,10 @@
     };
 
     packages = with pkgs; [
-      ripgrep
-      fd
       fzf
-      lazygit
       gh
 
-      cloc
+      tokei
       git-fame
 
       xclip

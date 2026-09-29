@@ -1,4 +1,4 @@
-{ pkgs, self }:
+{ pkgs }:
 
 let
   sfFontNames = [
@@ -21,7 +21,7 @@ let
     pkgs.stdenvNoCC.mkDerivation {
       pname = name;
       version = "1.0";
-      src = self + "/fonts/sf-family/${name}.tar.gz";
+      src = ./${name}.tar.gz;
       dontBuild = true;
       installPhase = ''
         mkdir -p "$out/share/fonts/${name}"

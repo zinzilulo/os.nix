@@ -6,8 +6,7 @@
 
 {
   imports = [
-    direnv-instant.homeModules.direnv-instant
-
+    direnv-instant
     ./hm.nix
     ./sway.hm.nix
     ./i3.hm.nix
@@ -39,10 +38,7 @@
 
   home = {
     packages = with pkgs; [
-      ripgrep
-      fd
       fzf
-      lazygit
       gh
     ];
 

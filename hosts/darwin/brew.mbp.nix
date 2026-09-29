@@ -7,9 +7,7 @@ let
     "1password"
     "adguard"
     "app-cleaner"
-    "bartender"
     "betterzip"
-    "chatgpt"
     "coconutbattery"
     "crossover"
     "daisydisk"
@@ -32,7 +30,6 @@ let
     "spotify"
     "steam"
     "swish"
-    "thaw"
     "tor-browser"
     "typora"
     "vlc"
@@ -40,7 +37,6 @@ let
   ];
 
   notAutoUpdatedCasks = [
-    "pear-devs/pear/pear-desktop"
     "adobe-digital-editions"
     "apparency"
     "calibre"
@@ -48,7 +44,6 @@ let
     "keyboardcleantool"
     "qflipper"
     "stellarium"
-    "synologyassistant"
   ];
 
   actuallyAutoUpdatedCasks = [

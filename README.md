@@ -6,18 +6,18 @@ The flake defines these configurations:
 
 ### NixOS (`nixosConfigurations`)
 
-| Flake name      | System        | Host key            | Built (latest)  | Tested (latest) |
-|-----------------|---------------|---------------------|-----------------|-----------------|
-| `nixos-homelab` | x86_64-linux  | `nixos-homelab`     | N/A             | N/A             |
-| `nixos-homelab` | x86_64-linux  | `nixos-homelab-lxc` | N/A             | N/A             |
-| `nixos-x86_64`  | x86_64-linux  | `nixos-x86_64`      | N/A             | N/A             |
-| `nixos-aarch64` | aarch64-linux | `nixos-aarch64`     | 2026-06-12      | 2026-06-12      |
+| Flake name      | System        | Host key            |
+|-----------------|---------------|---------------------|
+| `nixos-homelab` | x86_64-linux  | `nixos-homelab`     |
+| `nixos-homelab` | x86_64-linux  | `nixos-homelab-lxc` |
+| `nixos-x86_64`  | x86_64-linux  | `nixos-x86_64`      |
+| `nixos-aarch64` | aarch64-linux | `nixos-aarch64`     |
 
 ### macOS (`darwinConfigurations`)
 
-| Flake name   | System         | Host key     | Built (latest)  | Tested (latest) |
-|--------------|----------------|--------------|-----------------|-----------------|
-| `darwin-mbp` | aarch64-darwin | `darwin-mbp` | 2026-06-12      | 2026-06-12      |
+| Flake name   | System         | Host key     |
+|--------------|----------------|--------------|
+| `darwin-mbp` | aarch64-darwin | `darwin-mbp` |
 
 ## Username and Hostnames
 
@@ -32,6 +32,7 @@ Edit `./local/default.nix`:
 
   # Hostnames for each flake configuration
   hosts = {
+    nixos-wsl = "your-wsl-host";
     nixos-homelab = "your-homelab-host";
     nixos-homelab-lxc = "your-homelab-lxc-host";
     nixos-x86_64 = "your-nixos-host";
@@ -63,10 +64,11 @@ sudo nixos-generate-config --show-hardware-config \
 ### NixOS Rebuild
 
 ```sh
+sudo nixos-rebuild switch --flake .#nixos-wsl
 sudo nixos-rebuild switch --flake .#nixos-homelab
 sudo nixos-rebuild switch --flake .#nixos-homelab-lxc
-sudo nixos-rebuild switch --flake .#nixos-x86_64
-sudo nixos-rebuild switch --flake .#nixos-aarch64
+sudo nixos-rebuild switch --flake .#parallels-x86_64
+sudo nixos-rebuild switch --flake .#parallels-aarch64
 ```
 
 ### macOS (nix-darwin) Rebuild

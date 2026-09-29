@@ -4,6 +4,7 @@
 
   # Hostnames for each flake configuration
   hosts = {
+    nixos-wsl = "your-wsl-host";
     nixos-homelab = "your-homelab-host";
     nixos-homelab-lxc = "your-homelab-lxc-host";
     nixos-x86_64 = "your-nixos-host";

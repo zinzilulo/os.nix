@@ -92,6 +92,7 @@
     systemPackages = with pkgs; [
       file
       git
+      lazygit
       curl
       wget
 
@@ -100,6 +101,11 @@
       tmux
       fastfetch
       btop
+
+      rlwrap
+
+      fd
+      ripgrep
     ];
   };
 
@@ -119,7 +125,9 @@
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    extraSpecialArgs = { inherit direnv-instant; };
+    extraSpecialArgs = {
+      direnv-instant = direnv-instant.homeModules.direnv-instant;
+    };
 
     users.${userName} = import ../../users/homelab.hm.nix;
   };

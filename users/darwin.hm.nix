@@ -8,7 +8,7 @@
 
 {
   imports = [
-    direnv-instant.homeModules.direnv-instant
+    direnv-instant
     ./hm.nix
   ];
 
@@ -97,13 +97,10 @@
         '';
       })
 
-      ripgrep
-      fd
       fzf
-      lazygit
       gh
 
-      cloc
+      tokei
       git-fame
 
       aria2
@@ -114,6 +111,7 @@
         withLibnbd = false;
       })
       iperf3
+      globalping-cli
       pandoc
       rsync
 
@@ -132,6 +130,7 @@
       waifu2x-ncnn-vulkan
       katago
       portal-stillalive-rust
+      lq
     ];
   };
 }

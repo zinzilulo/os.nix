@@ -1,17 +1,17 @@
 {
   config,
-  pkgs,
-  self,
   userName,
   hostName,
   home-manager,
   direnv-instant,
+  nixos-pkgs,
+  nixpkgs-pkgs,
   ...
 }:
 
 let
   sfFamily = import ../../fonts/sf-family {
-    inherit pkgs self;
+    pkgs = nixpkgs-pkgs;
   };
 in
 {
@@ -28,8 +28,11 @@ in
     "flakes"
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
+    enable = true;
+    device = "/dev/sda";
+    useOSProber = true;
+  };
 
   unfreePackages.packages = [
     [
@@ -41,7 +44,7 @@ in
   services = {
     dbus.enable = true;
 
-    # openssh.enable = true;
+    openssh.enable = true;
 
     pulseaudio.enable = false;
     pipewire = {
@@ -65,7 +68,7 @@ in
       settings = {
         default_session = {
           user = "greeter";
-          command = "${pkgs.tuigreet}/bin/tuigreet --xsessions ${config.services.displayManager.sessionData.desktops}/share/xsessions --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions --remember --remember-user-session";
+          command = "${nixos-pkgs.tuigreet}/bin/tuigreet --xsessions ${config.services.displayManager.sessionData.desktops}/share/xsessions --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions --remember --remember-user-session";
         };
       };
     };
@@ -134,16 +137,34 @@ in
     # proxy.default = "http://user:password@proxy:port/";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-    # firewall.allowedTCPPorts = [ ... ];
-    # firewall.allowedUDPPorts = [ ... ];
-    # firewall.enable = false;
+    firewall = {
+      enable = true;
+
+      allowedTCPPorts = [
+        22
+        21115
+        21116
+        21117
+        21118
+        21119
+      ];
+
+      allowedUDPPorts = [
+        22
+        21115
+        21116
+        21117
+        21118
+        21119
+      ];
+    };
   };
 
   fonts = {
     enableDefaultPackages = true;
 
     packages =
-      with pkgs;
+      with nixos-pkgs;
       [
         noto-fonts
         noto-fonts-cjk-sans
@@ -162,6 +183,39 @@ in
     };
   };
 
+  systemd.services.rustdesk = {
+    description = "RustDesk";
+    requires = [ "network-online.target" ];
+    after = [
+      "network-online.target"
+      "display-manager.service"
+    ];
+    wantedBy = [ "graphical.target" ];
+    path = [
+      nixos-pkgs.rustdesk-flutter
+      nixos-pkgs.procps
+      nixos-pkgs.gawk
+      nixos-pkgs.gnugrep
+      nixos-pkgs.findutils
+      nixos-pkgs.bash
+      nixos-pkgs.coreutils
+      "/run/wrappers"
+      "/run/current-system/sw"
+    ];
+
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${nixos-pkgs.rustdesk-flutter}/bin/rustdesk --service";
+      ExecStop = "pkill -f \"rustdesk --service\"";
+      Restart = "always";
+      RestartSec = "5";
+      KillMode = "mixed";
+      TimeoutStopSec = "30";
+      User = "root";
+      LimitNOFILE = "100000";
+    };
+  };
+
   environment = {
     sessionVariables = {
       EDITOR = "nvim";
@@ -169,9 +223,13 @@ in
       GIT_EDITOR = "nvim";
     };
 
-    systemPackages = with pkgs; [
+    systemPackages = with nixos-pkgs; [
+      man-pages
+      man-pages-posix
+
       file
       git
+      lazygit
       curl
       wget
 
@@ -182,7 +240,14 @@ in
       fastfetch
       btop
 
+      rlwrap
+
+      fd
+      ripgrep
+
       chromium
+
+      rustdesk-flutter
     ];
   };
 
@@ -199,7 +264,9 @@ in
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    extraSpecialArgs = { inherit direnv-instant; };
+    extraSpecialArgs = {
+      direnv-instant = direnv-instant.homeModules.direnv-instant;
+    };
 
     users.${userName} = import ../../users/nixos.hm.nix;
   };

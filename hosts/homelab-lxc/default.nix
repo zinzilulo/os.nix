@@ -24,7 +24,15 @@
   services = {
     dbus.enable = true;
 
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "no";
+      };
+    };
 
     gnome.gnome-keyring.enable = true;
   };
@@ -84,6 +92,7 @@
     systemPackages = with pkgs; [
       file
       git
+      lazygit
       curl
       wget
 
@@ -92,6 +101,11 @@
       tmux
       fastfetch
       btop
+
+      rlwrap
+
+      ripgrep
+      fd
     ];
   };
 
@@ -111,7 +125,9 @@
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    extraSpecialArgs = { inherit direnv-instant; };
+    extraSpecialArgs = {
+      direnv-instant = direnv-instant.homeModules.direnv-instant;
+    };
 
     users.${userName} = import ../../users/homelab.hm.nix;
   };
