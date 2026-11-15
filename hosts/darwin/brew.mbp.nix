@@ -5,7 +5,6 @@ let
 
   autoUpdatedCasks = [
     "1password"
-    "adguard"
     "app-cleaner"
     "betterzip"
     "coconutbattery"

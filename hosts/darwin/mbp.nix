@@ -55,10 +55,25 @@ in
 
   nix = {
     enable = true;
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+
+    linux-builder = {
+      enable = true;
+
+      package = pkgs.darwin.linux-builder-vz;
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
+    };
+
+    settings = {
+      trusted-users = [ "@admin" ];
+
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
   };
 
   programs.zsh = {

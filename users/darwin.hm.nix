@@ -97,6 +97,31 @@
         '';
       })
 
+      (writeShellApplication {
+        name = "fzf-led";
+        runtimeInputs = [
+          ripgrep
+          fzf
+        ];
+        text = ''
+          rg --files --hidden |
+            fzf --bind "enter:execute(\''${EDITOR} {})"
+        '';
+      })
+
+      (writeShellApplication {
+        name = "fzf-ed";
+        runtimeInputs = [
+          ripgrep
+          fzf
+        ];
+        text = ''
+          rg --files --hidden |
+            fzf --bind "enter:become(\''${EDITOR} {})"
+        '';
+      })
+
+      ugrep
       fzf
       gh
 
